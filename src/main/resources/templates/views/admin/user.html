@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user.css}">
+    <script th:src="@{/js/admin_user.js}"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<th:block th:insert="~{common/adminHeader::header}"></th:block>
+
+<div class="mb-2 mt-2 col-lg-6">
+    <h3><strong>전체 유저</strong><strong>  </strong></h3>
+    <hr>
+    <table class="table table-hover">
+        <thead class="table-secondary">
+        <th>#</th>
+        <th>아이디</th>
+        <th>이름</th>
+        <th>가입일</th>
+        <th>권한</th>
+        <th></th>
+        <th></th>
+        </thead>
+        <tbody>
+        <tr th:each="member : ${list}">
+            <td th:text="${member.id}"></td>
+            <td th:text="${member.username}"></td>
+            <td th:text="${member.name}"></td>
+            <td th:text="${#temporals.format(member.regDate, 'yyyy-MM-dd')}"></td>
+            <td>
+                <span th:each="auth : ${member.authorities}" th:text="${auth.name}"></span>
+            </td>
+            <td>
+                <a th:href="@{/admin/user_modify/{id}(id=${member.id})}" class="btn-update">수정</a>
+            </td>
+            <td>
+                <button type="button" class="btn-delete" id="btn-delete" name="btn-delete" th:data-id="${member.id}">삭제</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</div>
+
+</body>
+</html>

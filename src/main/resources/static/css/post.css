@@ -1,0 +1,224 @@
+/* General Styles */
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+/* Notice Form Section */
+#addNotice {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+#addNotice h5 {
+  color: #0d6832;
+  font-weight: 600;
+  margin-bottom: 5px;
+  font-size: 1.3rem;
+}
+
+#addNotice label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #495057;
+}
+
+#addNotice input[type="text"],
+#addNotice textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+#addNotice input[type="text"]:focus,
+#addNotice textarea:focus {
+  border-color: #0d6832;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(13, 104, 50, 0.1);
+}
+
+#addNotice textarea {
+  resize: vertical;
+  min-height: 150px;
+}
+
+#btn_notice {
+  background-color: #0d6832;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+#btn_notice:hover {
+  background-color: #0a5228;
+}
+
+/* Notice List Section - ENLARGED */
+.mb-2.mt-2.col-lg-6 {
+  width: 90% !important; /* Override Bootstrap's width */
+  max-width: 1200px;
+  margin: 0 auto 30px;
+  float: none;
+  padding: 20px;
+}
+
+.table {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  table-layout: fixed; /* For better column control */
+}
+
+.table-secondary {
+  background-color: #0d6832 !important;
+  color: white;
+}
+
+.table thead th {
+  font-weight: 600;
+  border-bottom: none;
+  padding: 15px;
+  font-size: 1.05rem;
+  text-align: left;
+}
+
+/* Column widths */
+.table thead th:nth-child(1) { /* 작성자 */
+  width: 12%;
+}
+.table thead th:nth-child(2) { /* 제목 */
+  width: 20%;
+}
+.table thead th:nth-child(3) { /* 내용 */
+  width: 40%;
+}
+.table thead th:nth-child(4) { /* 작성일 */
+  width: 13%;
+}
+.table thead th:nth-child(5) { /* 관리 (삭제 버튼) */
+  width: 15%;
+  text-align: center;
+}
+
+.table tbody td {
+  padding: 15px;
+  vertical-align: middle;
+  border-top: 1px solid #e9ecef;
+  font-size: 1rem;
+  word-break: break-word;
+}
+
+/* Center the delete button column */
+.table tbody td:last-child {
+  text-align: center;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(13, 104, 50, 0.05);
+}
+
+/* Title Section */
+h3 strong {
+  color: #0d6832;
+  font-size: 1.8rem;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+hr {
+  border-color: #0d6832;
+  opacity: 0.2;
+  margin: 15px 0 25px;
+  height: 2px;
+}
+
+/* Delete Button */
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-block;
+  font-weight: 500;
+}
+
+.btn-delete:hover {
+  background-color: #c82333;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+  .mb-2.mt-2.col-lg-6 {
+    width: 95% !important;
+    padding: 15px;
+  }
+
+  .table thead th,
+  .table tbody td {
+    padding: 12px 10px;
+  }
+
+  /* Adjust column widths for smaller screens */
+  .table thead th:nth-child(1) { width: 15%; }
+  .table thead th:nth-child(2) { width: 20%; }
+  .table thead th:nth-child(3) { width: 30%; }
+  .table thead th:nth-child(4) { width: 15%; }
+  .table thead th:nth-child(5) { width: 20%; }
+}
+
+@media (max-width: 768px) {
+  .table {
+    font-size: 0.9rem;
+  }
+
+  .table thead th {
+    font-size: 0.95rem;
+  }
+
+  .table tbody td {
+    font-size: 0.9rem;
+    padding: 10px 8px;
+  }
+
+  h3 strong {
+    font-size: 1.5rem;
+  }
+
+  .btn-delete {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 576px) {
+  .table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .table thead th,
+  .table tbody td {
+    padding: 8px 6px;
+  }
+}

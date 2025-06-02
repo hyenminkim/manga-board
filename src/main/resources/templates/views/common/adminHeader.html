@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<th:block th:fragment="header">
+    <nav class="navbar navbar-expand-sm navbar-dark bg-secondary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="javascript:void(0)">관리자 페이지</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="adnav">
+                <ul class="navbar-nav mx-auto mb-lg-0">
+                    <!-- 홈 메뉴 -->
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/home}">홈</a>
+                    </li>
+                    <!-- 회원 관리 메뉴 -->
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/user}">회원</a>
+                    </li>
+                    <!-- 게시글 관리 메뉴 -->
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/post}">게시글</a>
+                    </li>
+                    <!-- 공지 작성 메뉴 -->
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/notice}">공지</a>
+                    </li>
+                    <!-- 채팅 메뉴 -->
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/chat}">채팅방</a>
+                    </li>
+
+                </ul>
+
+                <!-- 로그인 했을때는 username 과 로그아웃 form 보여주기 -->
+                <form th:action="@{/user/logout}" method="POST" sec:authorize="isAuthenticated()" th:with="member=${#authentication.getPrincipal().getMember()}">
+                    <span class="d-flex">
+                        <span class="text-light p-2">[[${member.name}]] 님 환영합니다</span>
+                        <span><button class="btn btn-danger mt-1 btn-sm" type="submit">Logout</button></span>
+                    </span>
+                </form>
+            </div>
+        </div>
+    </nav>
+</th:block>

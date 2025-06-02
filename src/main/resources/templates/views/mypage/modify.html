@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content">
+    <form th:action="@{/mypage/modify}" method="post" id="modifyForm" name="modifyForm">
+        <span class="label">
+            <label>아이디</label>
+            <input type="text"  th:value="${member.username}" readonly id="username" name="username">
+       </span>
+        <span class="label">
+            <label>새로운 비밀번호</label>
+            <input type="password" id="password" name="password">
+       </span>
+
+        <span class="label">
+            <label>이름</label>
+            <input type="text"  th:value="${member.name}" id="name" name="name">
+       </span>
+        <input type="button" value="수정하기" onclick="modifycheck()">
+        <input type="reset" value="초기화">
+    </form>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" th:href="@{/css/list.css}">
+<head>
+    <meta charset="UTF-8">
+    <title>만화 리스트</title>
+</head>
+<body>
+<th:block th:insert="~{common/header::header}"></th:block>
+
+<h2>만화 리스트</h2>
+
+<span th:if="${result != null}">
+    <p>검색 수</p>
+    <p th:text="${result.totalCount}">
+</span>
+
+
+<table>
+    <thead>
+    <tr>
+        <th></th>
+        <th>제목</th>
+        <th>장르</th>
+        <th>그림 작가</th>
+        <th>글 작가</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr th:each="m : ${items}">
+            <td id="manga_img"><img th:src="${m.imageDownloadUrl}" width="200px"/></td>
+            <td id="title" th:text="${m.title}"></td>
+            <td id="genre" th:text="${m.mainGenreCdNm}"></td>
+            <td id="pictr" th:text="${m.pictrWritrNm}"></td>
+            <td id="sntnc" th:text="${m.sntncWritrNm}"></td>
+        </tr>
+    </tbody>
+</table>
+
+<th:block th:replace="~{managa/pagination::pagination}"></th:block>
+
+
+</body>
+</html>

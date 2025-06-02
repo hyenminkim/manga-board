@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/chat.css">
+    <title center>채팅방 페이지</title>
+</head>
+<body>
+
+<!-- 헤더 삽입  -->
+<th:block th:insert="~{common/header::header}"></th:block>
+<div class="listPage">
+    <h3>채팅방</h3>
+    <hr><br>
+
+
+    <!-- 목록 -->
+    <table th:with="logged_member=${#authentication.principal.member}">
+        <thead class="table-success text-center">
+        <tr>
+            <th>채팅방 제목</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="room : ${chatroom}">
+            <td class="text-center">
+                <input type="text" th:value="${room.title}" readonly/>
+            </td>
+            <td class="text-center">
+                <a th:href="@{/chat/room/{room_id}(room_id=${room.room_id})}">입장</a><br>
+                <button type="button"
+                        th:if="${logged_member.id == room.member_id}"
+                        th:attr="data-room-id=${room.room_id}"
+                        onclick="deleteRoom(this)">
+                    삭제
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 목록 -->
+
+
+
+</div>
+</body>
+</html>

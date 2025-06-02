@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+    <link rel="stylesheet" href="/css/mypage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/js/mypage.js"></script>
+</head>
+<body>
+<div class="myPage">
+
+    <div class="toHome">
+        <a href="/managa/list">
+            <i class="fas fa-home"></i>
+            홈으로 돌아가기
+        </a>
+    </div>
+
+    <h1>마이페이지</h1>
+    <hr>
+
+    <div class="container-full">
+        <div class="container-left">
+            <div class="row">
+                <!-- 좌측 버튼 그룹 -->
+                <div class="col-md-3">
+                    <div class="mypageBtn">
+                        <button class="btn-outline-dark" onclick="loadContent('view')">프로필 보기</button>
+                        <button class="btn-outline-dark" onclick="loadContent('modify')">프로필 수정</button>
+                        <button class="btn-outline-dark" onclick="loadContent('myPosts')">작성한 게시글</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 우측 컨텐츠 영역 -->
+        <div class="container-right" id="content-container" th:if="${containerRightPage}">
+            <div th:insert="${containerRightPage} :: content"></div>
+        </div>
+    </div>
+
+
+
+
+
+</div>
+</body>
+</html>

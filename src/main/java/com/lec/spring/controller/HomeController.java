@@ -19,7 +19,7 @@ public class HomeController {
 
     @RequestMapping("/")
     public String home(Model model){
-        return "redirect:/home";
+        return "redirect:/managa/list";
     }
 
     @RequestMapping("/home")

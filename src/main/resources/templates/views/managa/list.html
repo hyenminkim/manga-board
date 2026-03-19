@@ -1,45 +1,79 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" type="text/css" th:href="@{/css/list.css}">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>만화 리스트</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/list.css}">
 </head>
 <body>
 <th:block th:insert="~{common/header::header}"></th:block>
 
-<h2>만화 리스트</h2>
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-inner">
+        <h1 class="hero-title">만화 아카이브</h1>
+        <p class="hero-desc">다양한 만화 작품을 검색하고 탐색해보세요</p>
 
-<span th:if="${result != null}">
-    <p>검색 수</p>
-    <p th:text="${result.totalCount}">
-</span>
+        <!-- 검색바 -->
+        <form class="search-bar" th:action="@{/managa/list}" method="get">
+            <div class="search-input-wrap">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" name="keyword" class="search-input"
+                       th:value="${keyword}" placeholder="제목, 작가명으로 검색..." autocomplete="off" />
+                <button type="submit" class="search-btn">검색</button>
+            </div>
+        </form>
 
+        <div class="search-result-info" th:if="${result != null && keyword != null && keyword != ''}">
+            <span>'<strong th:text="${keyword}"></strong>' 검색 결과
+                <strong th:text="${result.totalCount}"></strong>건</span>
+        </div>
+    </div>
+</section>
 
-<table>
-    <thead>
-    <tr>
-        <th></th>
-        <th>제목</th>
-        <th>장르</th>
-        <th>그림 작가</th>
-        <th>글 작가</th>
-    </tr>
-    </thead>
-    <tbody>
-        <tr th:each="m : ${items}">
-            <td id="manga_img"><img th:src="${m.imageDownloadUrl}" width="200px"/></td>
-            <td id="title" th:text="${m.title}"></td>
-            <td id="genre" th:text="${m.mainGenreCdNm}"></td>
-            <td id="pictr" th:text="${m.pictrWritrNm}"></td>
-            <td id="sntnc" th:text="${m.sntncWritrNm}"></td>
-        </tr>
-    </tbody>
-</table>
+<!-- Card Grid -->
+<section class="content-section">
+    <div class="manga-grid">
+        <a th:each="m, stat : ${items}"
+           th:href="@{/managa/detail(title=${m.title}, isbn=${m.isbn}, prdctNm=${m.prdctNm}, imageDownloadUrl=${m.imageDownloadUrl}, mainGenreCdNm=${m.mainGenreCdNm}, pictrWritrNm=${m.pictrWritrNm}, sntncWritrNm=${m.sntncWritrNm})}"
+           class="manga-card"
+           th:styleappend="'animation-delay:' + ${stat.index * 0.05} + 's'">
+            <div class="manga-card__image">
+                <img th:src="${m.imageDownloadUrl}" th:alt="${m.title}"
+                     onerror="this.src='https://via.placeholder.com/300x400?text=No+Image'" />
+                <div class="manga-card__overlay">
+                    <span class="manga-card__view-btn"><i class="fas fa-book-open"></i> 상세보기</span>
+                </div>
+            </div>
+            <div class="manga-card__body">
+                <span class="manga-card__genre-badge" th:if="${m.mainGenreCdNm != null}" th:text="${m.mainGenreCdNm}"></span>
+                <h3 class="manga-card__title" th:text="${m.title}"></h3>
+                <div class="manga-card__meta">
+                    <span th:if="${m.pictrWritrNm != null && m.pictrWritrNm != ''}">
+                        <i class="fas fa-paint-brush"></i> <span th:text="${m.pictrWritrNm}"></span>
+                    </span>
+                    <span th:if="${m.sntncWritrNm != null && m.sntncWritrNm != ''}">
+                        <i class="fas fa-pen-nib"></i> <span th:text="${m.sntncWritrNm}"></span>
+                    </span>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- 결과 없음 -->
+    <div class="empty-state" th:if="${#lists.isEmpty(items)}">
+        <i class="fas fa-search"></i>
+        <p>검색 결과가 없습니다</p>
+        <span>다른 키워드로 검색해보세요</span>
+    </div>
+</section>
 
 <th:block th:replace="~{managa/pagination::pagination}"></th:block>
-
 
 </body>
 </html>

@@ -22,5 +22,17 @@ public class Managa {
     private  String pictrWritrNm; // 그림 작가
     private  String sntncWritrNm; // 글 작가
 
-
+    // 상세 API 필드
+    private String isbn;           // ISBN
+    private String setIsbn;        // 세트 ISBN
+    private String outline;        // 줄거리
+    private String subtitl;        // 부제목
+    private String edtn;           // 에디션
+    private String plscmpnIdNm;    // 출판사명
+    private String pltfomCdNm;     // 플랫폼명
+    private String ageGradCdNm;    // 연령등급 (bookAndWebtoonList)
+    private String orginlTitle;    // 원작제목
+    private String originClCdNm;   // 연령등급 (dcmtDtaList)
+    private String pessOfficNm;    // 소장위치
+    private String callno;         // 청구기호
 }

@@ -2,102 +2,102 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
-
     <script src="https://kit.fontawesome.com/51772bd9bd.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-
     <script th:src="@{/js/list.js}"></script>
-
-    <title>목록</title>
+    <title>게시판</title>
+    <style>
+        .board-page { max-width: 960px; margin: 0 auto; padding: 32px 24px 60px; }
+        .board-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+        .board-header h2 { font-size: 28px; font-weight: 900; margin: 0; letter-spacing: -0.5px; }
+        .board-meta { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--color-text-muted); }
+        .board-meta select { padding: 6px 12px; border: 2px solid var(--color-border); border-radius: var(--radius-full); font-size: 13px; font-family: inherit; background: var(--color-bg-input); outline: none; }
+        .board-meta select:focus { border-color: var(--color-primary); }
+        .board-list-card { background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--color-border); overflow: hidden; }
+        .board-table { width: 100%; border-collapse: collapse; }
+        .board-table thead th { background: var(--color-light); padding: 14px 18px; font-weight: 700; font-size: 12px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--color-border); text-align: left; }
+        .board-table tbody td { padding: 16px 18px; border-bottom: 1px solid var(--color-border); font-size: 14px; }
+        .board-table tbody tr { transition: background 0.15s; }
+        .board-table tbody tr:hover { background: var(--color-primary-light); }
+        .board-table tbody tr:last-child td { border-bottom: none; }
+        .board-table td a { color: var(--color-text); text-decoration: none; font-weight: 600; transition: color 0.15s; }
+        .board-table td a:hover { color: var(--color-primary); }
+        .board-table .col-id { width: 60px; text-align: center; color: var(--color-text-muted); }
+        .board-table .col-view { width: 80px; text-align: center; color: var(--color-text-muted); font-size: 13px; }
+        .board-table .col-date { width: 150px; color: var(--color-text-muted); font-size: 13px; }
+        .board-table .col-author { width: 100px; }
+        .board-actions { display: flex; justify-content: flex-end; margin-top: 20px; }
+        .btn-write { display: inline-flex; align-items: center; gap: 6px; padding: 10px 24px; background: var(--color-primary-gradient); color: #fff; border-radius: var(--radius-full); text-decoration: none; font-weight: 700; font-size: 14px; transition: all 0.25s; box-shadow: 0 2px 8px rgba(13,104,50,0.2); }
+        .btn-write:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(13,104,50,0.3); color: #fff; }
+        @media (max-width: 768px) {
+            .board-page { padding: 20px 16px 40px; }
+            .board-table thead { display: none; }
+            .board-table tbody td { display: block; padding: 8px 16px; text-align: right; border-bottom: none; }
+            .board-table tbody td::before { content: attr(data-label); float: left; font-weight: 700; color: var(--color-text-muted); font-size: 12px; }
+            .board-table tbody tr { border-bottom: 1px solid var(--color-border); padding: 8px 0; }
+            .board-table .col-id, .board-table .col-view, .board-table .col-date, .board-table .col-author { width: auto; text-align: right; }
+        }
+    </style>
 </head>
-
-<body style="margin-bottom: 200px">
-<!--/* 인증 헤더 */-->
+<body>
 <th:block th:insert="~{common/header::header}"></th:block>
 
-<div class="container mt-3">
-    <h2>목록</h2>
-    <hr>
-
-    <!-- 페이징 헤더 -->
-    <div class="mb-3 mt-3 clearfix">
-        <span class="float-start me-2">총 [[${cnt}]]개</span>
-        <span class="float-start">page [[${page}]]/[[${totalPage}]]</span>
-        <span class="float-end">
-                <form name="frmPageRows">
-                    <input type="hidden" name="page" th:value="${page}">
-                    <select class="form-select" name="pageRows">
-                        <option value="10" th:selected="${pageRows==10}">10</option>
-                        <option value="15" th:selected="${pageRows==15}">15</option>
-                        <option value="20" th:selected="${pageRows==20}">20</option>
-                        <option value="50" th:selected="${pageRows==50}">50</option>
-                    </select>
-                </form>
-            </span>
-    </div>
-    <!-- 페이징 헤더 -->
-
-    <!-- 목록 -->
-    <table class="table table-hover">
-        <thead class="table-success">
-        <tr>
-            <th>#</th>
-            <th>제목</th>
-            <th>작성자</th>
-            <th>조회수</th>
-            <th>작성일</th>
-        </tr>
-        </thead>
-        <tbody>
-            <tr th:each="post : ${list}">
-                <td th:text="${post.id}"></td>
-                <td><a th:href="@{'/board/detail/' + ${post.id}}" th:text="${post.subject}"></a></td>
-                <td th:text="${post.member.username}"></td>
-                <td th:text="${post.viewCnt}"></td>
-                <td th:text="${#temporals.format(post.regDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
-            </tr>
-        </tbody>
-    </table>
-    <!-- 목록 -->
-
-    <div class="row">
-        <div class="col-12">
-            <a class="btn btn-outline-dark" th:href="@{/board/write}" sec:authorize="hasAnyRole('ADMIN', 'MEMBER')">작성</a>
+<div class="board-page">
+    <div class="board-header">
+        <h2>게시판</h2>
+        <div class="board-meta">
+            <span>총 [[${cnt}]]개 &middot; [[${page}]]/[[${totalPage}]]</span>
+            <form name="frmPageRows">
+                <input type="hidden" name="page" th:value="${page}">
+                <select class="form-select" name="pageRows">
+                    <option value="10" th:selected="${pageRows==10}">10개씩</option>
+                    <option value="15" th:selected="${pageRows==15}">15개씩</option>
+                    <option value="20" th:selected="${pageRows==20}">20개씩</option>
+                    <option value="50" th:selected="${pageRows==50}">50개씩</option>
+                </select>
+            </form>
         </div>
+    </div>
+
+    <div class="board-list-card">
+        <table class="board-table">
+            <thead>
+            <tr>
+                <th class="col-id">#</th>
+                <th>제목</th>
+                <th class="col-author">작성자</th>
+                <th class="col-view">조회</th>
+                <th class="col-date">작성일</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:each="post : ${list}">
+                    <td class="col-id" data-label="#" th:text="${post.id}"></td>
+                    <td data-label="제목"><a th:href="@{'/board/detail/' + ${post.id}}" th:text="${post.subject}"></a></td>
+                    <td class="col-author" data-label="작성자" th:text="${post.member.username}"></td>
+                    <td class="col-view" data-label="조회" th:text="${post.viewCnt}"></td>
+                    <td class="col-date" data-label="작성일" th:text="${#temporals.format(post.regDate, 'yyyy-MM-dd HH:mm')}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="board-actions">
+        <a class="btn-write" th:href="@{/board/write}" sec:authorize="hasAnyRole('ADMIN', 'MEMBER')">
+            <i class="fas fa-pen"></i> 글쓰기
+        </a>
     </div>
 </div>
 
-<!-- pagination -->
 <th:block th:insert="~{board/pagination::pagination}"></th:block>
-<!-- pagination -->
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

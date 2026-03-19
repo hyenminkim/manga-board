@@ -1,6 +1,7 @@
 package com.lec.spring.controller;
 
 
+import com.lec.spring.domain.Managa;
 import com.lec.spring.domain.ManagaResponse;
 import com.lec.spring.service.NoticeService;
 import com.lec.spring.util.U;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Controller
@@ -97,6 +100,104 @@ public class ManagaController {
         return "/managa/list";
     }
 
+
+    @GetMapping("/detail")
+    public String detail(Model model,
+                         @RequestParam String title,
+                         @RequestParam(required = false) String isbn,
+                         @RequestParam(required = false) String prdctNm,
+                         @RequestParam(required = false) String imageDownloadUrl,
+                         @RequestParam(required = false) String mainGenreCdNm,
+                         @RequestParam(required = false) String pictrWritrNm,
+                         @RequestParam(required = false) String sntncWritrNm) {
+        String prvKey = "8c47fbb6a61f0945abadec1287c3e49d";
+        RestTemplate restTemplate = new RestTemplate();
+        Managa detail = null;
+
+        // 1차: dcmtDtaList (소장 도서 API - 확실히 동작)
+        try {
+            String url = "https://www.kmas.or.kr/openapi/search/dcmtDtaList"
+                    + "?prvKey=" + prvKey
+                    + "&title=" + title;
+
+            System.out.println("[Detail] dcmtDtaList 호출: " + url);
+            ManagaResponse response = restTemplate.getForObject(url, ManagaResponse.class);
+
+            if (response != null && response.getItemList() != null && !response.getItemList().isEmpty()) {
+                var items = response.getItemList();
+                System.out.println("[Detail] dcmtDtaList 결과: " + items.size() + "건");
+
+                detail = items.get(0);
+                // isbn 또는 title 정확 매칭
+                if (isbn != null && !isbn.isEmpty()) {
+                    for (var item : items) {
+                        if (isbn.equals(item.getIsbn())) { detail = item; break; }
+                    }
+                } else {
+                    for (var item : items) {
+                        if (title.equals(item.getTitle())) { detail = item; break; }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("[Detail] dcmtDtaList 오류: " + e.getMessage());
+        }
+
+        // 2차: bookAndWebtoonList로 줄거리(outline) 등 추가 정보 보강
+        try {
+            String searchKeyword = (prdctNm != null && !prdctNm.isEmpty()) ? prdctNm : title;
+            String url2 = "https://www.kmas.or.kr/openapi/search/bookAndWebtoonList"
+                    + "?prvKey=" + prvKey
+                    + "&title=" + searchKeyword;
+
+            System.out.println("[Detail] bookAndWebtoonList 호출: " + url2);
+            ManagaResponse response2 = restTemplate.getForObject(url2, ManagaResponse.class);
+
+            if (response2 != null && response2.getItemList() != null && !response2.getItemList().isEmpty()) {
+                var items2 = response2.getItemList();
+                System.out.println("[Detail] bookAndWebtoonList 결과: " + items2.size() + "건");
+
+                // isbn 매칭 또는 첫 번째
+                Managa extra = items2.get(0);
+                if (isbn != null && !isbn.isEmpty()) {
+                    for (var item : items2) {
+                        if (isbn.equals(item.getIsbn())) { extra = item; break; }
+                    }
+                }
+
+                // detail에 줄거리 등 보강
+                if (detail != null) {
+                    if (extra.getOutline() != null) detail.setOutline(extra.getOutline());
+                    if (extra.getPlscmpnIdNm() != null) detail.setPlscmpnIdNm(extra.getPlscmpnIdNm());
+                    if (extra.getPltfomCdNm() != null) detail.setPltfomCdNm(extra.getPltfomCdNm());
+                    if (extra.getAgeGradCdNm() != null) detail.setAgeGradCdNm(extra.getAgeGradCdNm());
+                    if (extra.getSubtitl() != null) detail.setSubtitl(extra.getSubtitl());
+                    if (extra.getEdtn() != null) detail.setEdtn(extra.getEdtn());
+                } else {
+                    detail = extra;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("[Detail] bookAndWebtoonList 오류: " + e.getMessage());
+        }
+
+        // 3차: 모두 실패 시 URL 파라미터로 전달받은 기본 정보
+        if (detail == null) {
+            System.out.println("[Detail] 모든 API 실패 - 기본 정보로 표시");
+            detail = Managa.builder()
+                    .title(title)
+                    .prdctNm(prdctNm)
+                    .imageDownloadUrl(imageDownloadUrl)
+                    .mainGenreCdNm(mainGenreCdNm)
+                    .pictrWritrNm(pictrWritrNm)
+                    .sntncWritrNm(sntncWritrNm)
+                    .isbn(isbn)
+                    .build();
+        }
+
+        model.addAttribute("manga", detail);
+        return "/managa/detail";
+    }
 
     // 공지사항
     @GetMapping("/notice")
